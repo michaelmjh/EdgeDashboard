@@ -928,6 +928,37 @@ fieldset.field > .legend { margin-bottom: 6px; }
 .save-pill.show { opacity: 1; transform: none; }
 .save-pill:empty { display: inline-block; }
 
+.link-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: var(--pill);
+  background: var(--track);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+  animation: fade-up 300ms var(--ease);
+}
+.link-badge .i { width: 14px; height: 14px; }
+
+.link-status {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--input-bg);
+}
+.link-status.is-linked {
+  border-color: color-mix(in srgb, var(--green) 55%, var(--border));
+  background: color-mix(in srgb, var(--green) 12%, var(--panel));
+}
+.link-status-icon { font-size: 20px; line-height: 1.3; }
+.link-status-title { margin: 0; font-weight: 650; }
+.link-status-text { margin: 2px 0 0; color: var(--muted); font-size: 13px; }
+
 /* ---------- Weather ---------- */
 
 .weather-card {

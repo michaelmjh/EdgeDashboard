@@ -2,17 +2,24 @@
   "manifest_version": 3,
   "name": "Duck Dashboard",
   "short_name": "Duck Dashboard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "DuckGenerator Dashboard Edition. A friendly new tab page with Google and DuckDuckGo search, quick links, sticky notes and weather.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1JRVS+95ou2D9LzgGS/yneih1QPxVCqoDPEg+xiAEHyvdLj/Ezyy/7DrQplatc7MloiXglmsqo7va29SH6GTbJ6uGxZ0VBMxavZfAud+DMZLXxPmZDP/V8UiMpAdo4TnCQOlsxZLNfxF7Pq7RHL+612jXfBWKGE0LgIrno8yap1XqRRh+GQiTo4xnINzBk8bP/fZr1EQ0ckUmf6JKBQdWn4NVGDP4NFbxolb8LYc9FWGQc6Iu9ZJCsJv0xaTrWjztWs+TQgfXOLdfGp+FIIb9GCRxMHkIya05w7SdlvsOzKz5kN7u9BWc3b1EHp86BKsXq0ADVg8MB7XSrPvuTQGkwIDAQAB",
   "chrome_url_overrides": {
     "newtab": "newtab.html"
+  },
+  "background": {
+    "service_worker": "background.js"
   },
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "permissions": ["storage", "favicon"],
+  "permissions": [
+    "storage",
+    "favicon"
+  ],
   "host_permissions": [
     "https://api.openweathermap.org/*",
     "https://api.open-meteo.com/*",

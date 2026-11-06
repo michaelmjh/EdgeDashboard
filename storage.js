@@ -73,6 +73,7 @@
       apiKey: ''
     },
     weatherCache: null,
+    notepadLink: null,
     searchHistory: {
       google: [],
       duckduckgo: []

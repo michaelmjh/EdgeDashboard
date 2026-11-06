@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="newtab.css">
   <!-- storage.js applies the saved theme before first paint, so no defer. -->
   <script src="storage.js"></script>
+  <script src="notesync.js" defer></script>
   <script src="weather.js" defer></script>
   <script src="newtab.js" defer></script>
   <script src="settings.js" defer></script>
@@ -114,6 +115,9 @@
           <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-note"/></svg></span>
           <h2 id="notesTitle" class="card-title">Sticky Notes</h2>
           <span id="saveStatus" class="save-pill" role="status" aria-live="polite"></span>
+          <span id="notepadBadge" class="link-badge" title="Synced with the Sticky Notes extension" hidden>
+            <svg class="i" aria-hidden="true"><use href="#i-link"/></svg><span>Sticky Notes</span>
+          </span>
         </div>
 
         <div class="note-tabs" role="tablist" aria-label="Notes" id="noteTabs"></div>
@@ -263,6 +267,13 @@
 
         <!-- Notes -->
         <section class="settings-panel" role="tabpanel" id="spanel-notes" aria-labelledby="stab-notes" tabindex="0" hidden>
+          <div class="link-status" id="notepadStatus" role="status">
+            <span class="link-status-icon" aria-hidden="true">🔗</span>
+            <div>
+              <p class="link-status-title" id="notepadStatusTitle">Not linked to Sticky Notes</p>
+              <p class="link-status-text" id="notepadStatusText"></p>
+            </div>
+          </div>
           <p class="panel-text">Back up your five notes to a file, bring them back later, or start fresh.</p>
           <div class="tile-actions">
             <button type="button" id="exportNotesBtn" class="action-tile" style="--accent: var(--green)">

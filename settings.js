@@ -28,6 +28,7 @@
     });
     if (id === 'links') renderLinksList();
     if (id === 'weather') fillWeatherForm();
+    if (id === 'notes' && typeof renderNotepadStatus === 'function') renderNotepadStatus();
     if (settings && settings.settingsTab !== id) {
       settings.settingsTab = id;
       Store.set('settings', settings);
@@ -228,6 +229,29 @@
   });
 
   /* ---------- Notes ---------- */
+
+  function renderNotepadStatus() {
+    const { id, connected } = Dash.notepadLink ? Dash.notepadLink.status() : {};
+    const box = $('#notepadStatus');
+    box.classList.toggle('is-linked', !!connected);
+    $('#notepadStatusTitle').textContent = connected
+      ? 'Synced with Sticky Notes ✓'
+      : id ? 'Sticky Notes not reachable' : 'Not linked to Sticky Notes';
+    $('#notepadStatusText').textContent = connected
+      ? 'Notes update both ways as you type, here or in the Sticky Notes popup.'
+      : id
+        ? 'Check the Sticky Notes extension is installed and switched on. Notes here are kept and will sync when it is back.'
+        : 'Install the Sticky Notes extension, then reload it once on the extensions page to link the two.';
+  }
+
+  Dash.on('notepad-link', renderNotepadStatus);
+  tabs.forEach((tab) => tab.addEventListener('click', () => {
+    if (tab.dataset.tab === 'notes') {
+      renderNotepadStatus();
+      if (Dash.notepadLink) Dash.notepadLink.refresh();
+    }
+  }));
+  renderNotepadStatus();
 
   $('#exportNotesBtn').addEventListener('click', () => {
     const data = Dash.notes.exportData();

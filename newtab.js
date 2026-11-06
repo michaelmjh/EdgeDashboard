@@ -649,12 +649,110 @@
     announceSave = false;
     await Store.set('notes', notes);
     if (announce) showSaved();
+    pushToNotepad();
   }, 400);
 
   function queueSave(announce) {
     if (announce) announceSave = true;
     persistNotes();
   }
+
+  /* ---------- Link with the Sticky Notes extension (see notesync.js) ---------- */
+
+  const link = { id: null, base: null, connected: false };
+
+  // The note being typed in is never overwritten by an incoming change.
+  let lastTypedAt = 0;
+  function isTyping() {
+    return persistNotes.pending() || Date.now() - lastTypedAt < 1500;
+  }
+  let pushing = Promise.resolve();
+
+  function setLinkState(connected) {
+    if (link.connected === connected) return;
+    link.connected = connected;
+    $('#notepadBadge').hidden = !connected;
+    Dash.emit('notepad-link', Dash.notepadLink.status());
+  }
+
+  async function saveLinkBase() {
+    const stored = (await Store.get('notepadLink')) || {};
+    if (stored.id && stored.id !== link.id) return;
+    await Store.set('notepadLink', Object.assign({}, stored, { id: link.id, base: link.base, lastSeen: Date.now() }));
+  }
+
+  /* Sends notes that differ from what both sides last agreed on. */
+  function pushToNotepad() {
+    pushing = pushing.then(async () => {
+      if (!link.id || !notes) return;
+      const changes = {};
+      NoteSync.COLOURS.forEach((colour, i) => {
+        const text = notes.items[i].text;
+        if (!link.base || link.base[colour] !== text) changes[colour] = text;
+      });
+      if (!Object.keys(changes).length) return;
+      const reply = await NoteSync.send(link.id, { type: 'set-notes', notes: changes });
+      if (!reply || !reply.ok) {
+        setLinkState(false);
+        return;
+      }
+      link.base = Object.assign({}, link.base, changes);
+      setLinkState(true);
+      await saveLinkBase();
+    });
+    return pushing;
+  }
+
+  /* Pulls Sticky Notes' notes and merges them in. */
+  async function pullFromNotepad() {
+    if (!link.id) {
+      setLinkState(false);
+      return;
+    }
+    const reply = await NoteSync.send(link.id, { type: 'get-notes' });
+    if (!reply || !reply.ok || !reply.notes) {
+      setLinkState(false);
+      return;
+    }
+    setLinkState(true);
+    const busy = isTyping();
+    const result = NoteSync.merge(notes.items, reply.notes, link.base, { skipIndex: busy ? notes.active : -1 });
+    link.base = result.base;
+    if (result.changed) {
+      if (busy) updateTabStates();
+      else loadNoteIntoEditor();
+      await Store.set('notes', notes);
+    }
+    if (result.pushBack) {
+      const ok = await NoteSync.send(link.id, { type: 'set-notes', notes: result.pushBack });
+      if (!ok) setLinkState(false);
+    }
+    await saveLinkBase();
+    if (busy) pushToNotepad();
+  }
+
+  async function initNotepadLink() {
+    if (!NoteSync.hasMessaging()) return;
+    const stored = await Store.get('notepadLink');
+    link.id = stored && stored.id ? stored.id : null;
+    link.base = stored && stored.base ? stored.base : null;
+    await pullFromNotepad();
+
+    // Sticky Notes introduced itself (via background.js) or the base moved on.
+    Store.onChange('notepadLink', (value) => {
+      if (!value || !value.id) return;
+      const isNew = value.id !== link.id;
+      link.id = value.id;
+      if (value.base) link.base = value.base;
+      setLinkState(true);
+      if (isNew) pullFromNotepad();
+    });
+  }
+
+  Dash.notepadLink = {
+    status: () => ({ id: link.id, connected: link.connected }),
+    refresh: () => pullFromNotepad()
+  };
 
   function renderTabs() {
     tabsEl.replaceChildren();
@@ -773,6 +871,7 @@
   }
 
   editor.addEventListener('input', () => {
+    lastTypedAt = Date.now();
     const note = notes.items[notes.active];
     note.text = editor.value;
     note.updated = Date.now();
@@ -834,9 +933,24 @@
     }
   });
 
+  /* Takes note texts written elsewhere (another new tab, or Sticky Notes via
+     background.js). The note being typed in here is left alone. */
   function applyExternalNotes(value) {
-    notes = Store.normaliseNotes(value);
-    loadNoteIntoEditor();
+    const incoming = Store.normaliseNotes(value);
+    const busy = isTyping();
+    let activeChanged = false;
+    let any = false;
+    incoming.items.forEach((n, i) => {
+      if (busy && i === notes.active) return;
+      if (n.text === notes.items[i].text) return;
+      notes.items[i].text = n.text;
+      notes.items[i].updated = n.updated;
+      any = true;
+      if (i === notes.active) activeChanged = true;
+    });
+    if (!any) return;
+    if (activeChanged) loadNoteIntoEditor();
+    else updateTabStates();
   }
 
   Dash.notes = {
@@ -861,11 +975,13 @@
       notes = { active: 0, items };
       loadNoteIntoEditor();
       await Store.set('notes', notes);
+      pushToNotepad();
     },
     async clearAll() {
       notes = { active: notes.active, items: Array.from({ length: Store.NOTE_COUNT }, Store.emptyNote) };
       loadNoteIntoEditor();
       await Store.set('notes', notes);
+      pushToNotepad();
     }
   };
 
@@ -883,14 +999,10 @@
       editor.scrollTop = note.scroll || 0;
     }
 
+    initNotepadLink();
+
     // Edits made in another new tab: pick them up unless we're typing here.
-    Store.onChange('notes', (value) => {
-      if (persistNotes.pending()) return;
-      if (document.activeElement === editor && document.hasFocus()) return;
-      const incoming = Store.normaliseNotes(value);
-      if (JSON.stringify(incoming.items.map((n) => n.text)) === JSON.stringify(notes.items.map((n) => n.text))) return;
-      applyExternalNotes(incoming);
-    });
+    Store.onChange('notes', applyExternalNotes);
 
     // Refresh relative "Edited ..." text when coming back to the tab.
     document.addEventListener('visibilitychange', async () => {
@@ -899,11 +1011,9 @@
         persistNotes.flush();
         return;
       }
-      if (!persistNotes.pending() && document.activeElement !== editor) {
-        applyExternalNotes(await Store.get('notes'));
-      } else {
-        renderNoteMeta();
-      }
+      applyExternalNotes(await Store.get('notes'));
+      renderNoteMeta();
+      pullFromNotepad();
     });
   }
 

@@ -18,6 +18,14 @@ No frameworks, no CDNs, no backend. Everything is stored in `chrome.storage.loca
 3. Click **Load unpacked** and pick this folder.
 4. Open a new tab. Edge may ask whether to keep the new page; choose **Keep changes**.
 
+## Sync with Sticky Notes
+
+If the Sticky Notes extension (michaelmjh/NotepadExtension) is installed in the same browser, the five notes sync both ways as you type. The link icon beside the notes title shows when it's connected; Settings → Notes shows the status.
+
+First-time link: load both extensions, then click **Reload** on Sticky Notes once in the extensions page.
+
+The dashboard has a fixed extension ID (`kgnlnhdenhgddbggpccmpodgogfhkggh`) from the `key` in `manifest.json`, so Sticky Notes can find it. Edits made while one side is missing are kept and merged when both are back. If both change the same note at once, the latest edit wins.
+
 ## Weather setup
 
 Weather works straight away with demo data. For live weather, open **Settings → Weather** and either:
@@ -46,6 +54,7 @@ Adding a provider: call `WeatherService.registerProvider(id, { label, needsKey, 
 - `weather.js` (provider layer and icons)
 - `storage.js` (storage wrapper, defaults, theme boot)
 - `settings.js` (settings dialog)
+- `notesync.js`, `background.js` (Sticky Notes sync)
 - `icons/` (16, 48 and 128 px)
 
 ## Permissions
