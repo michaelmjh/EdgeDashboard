@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>New Tab</title>
+  <link rel="icon" href="icons/icon16.png">
+  <link rel="stylesheet" href="newtab.css">
+  <!-- storage.js applies the saved theme before first paint, so no defer. -->
+  <script src="storage.js"></script>
+  <script src="weather.js" defer></script>
+  <script src="newtab.js" defer></script>
+  <script src="settings.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#noteEditor">Skip to notes</a>
+
+  <!-- Shared SVG symbols -->
+  <svg width="0" height="0" class="sr-only" aria-hidden="true" focusable="false">
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M15.5 15.5 20 20" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3.5 12h17M12 3.5c2.6 2.4 3.8 5.2 3.8 8.5s-1.2 6.1-3.8 8.5c-2.6-2.4-3.8-5.2-3.8-8.5S9.4 5.9 12 3.5z" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 19 6v5.5c0 4.4-2.9 8-7 9.5-4.1-1.5-7-5.1-7-9.5V6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m8.8 12 2.2 2.2 4.4-4.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-note" viewBox="0 0 24 24"><path d="M5 4h14v10l-6 6H5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M13 20v-6h6M8.5 9h7M8.5 12.5h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .4-8 5.5 5.5 0 0 0-10.6-.7A4.4 4.4 0 0 0 7 18z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.5-2-3.4-2.3.9a7.5 7.5 0 0 0-2.6-1.5L14 2.6h-4l-.5 2.4a7.5 7.5 0 0 0-2.6 1.5l-2.3-.9-2 3.4 2 1.5a7.6 7.6 0 0 0 0 3l-2 1.5 2 3.4 2.3-.9a7.5 7.5 0 0 0 2.6 1.5l.5 2.4h4l.5-2.4a7.5 7.5 0 0 0 2.6-1.5l2.3.9 2-3.4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M5 7h14M10 7V4.5h4V7M7 7l1 13h8l1-13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="m6 14 6-6 6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-down" viewBox="0 0 24 24"><path d="m6 10 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M19 12a7 7 0 1 1-2.1-5M19 4v4h-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-reset" viewBox="0 0 24 24"><path d="M5 12a7 7 0 1 0 2.1-5M5 4v4h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7.5V12l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+  </svg>
+
+  <div class="page">
+    <!-- Header -->
+    <header class="header fade-in">
+      <div class="greeting-block">
+        <h1 class="greeting">
+          <span class="duck" aria-hidden="true">🦆</span>
+          <span id="greeting">Hello</span>
+        </h1>
+        <p class="datetime">
+          <span id="date"></span>
+          <time id="time" class="time-pill"></time>
+        </p>
+      </div>
+      <button type="button" id="settingsBtn" class="icon-btn icon-btn-lg" aria-label="Open settings" aria-haspopup="dialog" title="Settings">
+        <svg class="i" aria-hidden="true"><use href="#i-gear"/></svg>
+      </button>
+    </header>
+
+    <!-- Search -->
+    <section class="search-grid" aria-label="Search">
+      <form class="card search-card fade-in" data-engine="google" role="search" aria-labelledby="googleTitle" style="--accent: var(--blue)">
+        <div class="card-head">
+          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-globe"/></svg></span>
+          <h2 id="googleTitle" class="card-title">Google Search</h2>
+          <button type="button" class="text-btn history-clear" hidden>Clear history</button>
+        </div>
+        <div class="search-field">
+          <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" class="input search-input" placeholder="Search Google" aria-label="Search Google"
+                 autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
+                 aria-expanded="false" aria-controls="googleHistory">
+          <button type="submit" class="btn primary search-btn">
+            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+            <span>Search</span>
+          </button>
+          <ul id="googleHistory" class="history-pop" role="listbox" aria-label="Recent Google searches" hidden></ul>
+        </div>
+      </form>
+
+      <form class="card search-card fade-in" data-engine="duckduckgo" role="search" aria-labelledby="ddgTitle" style="--accent: var(--orange)">
+        <div class="card-head">
+          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-shield"/></svg></span>
+          <h2 id="ddgTitle" class="card-title">DuckDuckGo Search</h2>
+          <button type="button" class="text-btn history-clear" hidden>Clear history</button>
+        </div>
+        <div class="search-field">
+          <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+          <input type="search" class="input search-input" placeholder="Search DuckDuckGo" aria-label="Search DuckDuckGo"
+                 autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
+                 aria-expanded="false" aria-controls="ddgHistory">
+          <button type="submit" class="btn primary search-btn">
+            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+            <span>Search</span>
+          </button>
+          <ul id="ddgHistory" class="history-pop" role="listbox" aria-label="Recent DuckDuckGo searches" hidden></ul>
+        </div>
+      </form>
+    </section>
+
+    <main class="dash-grid">
+      <!-- Left: Quick Links -->
+      <section class="card links-card fade-in" aria-labelledby="linksTitle" style="--accent: var(--blue)">
+        <div class="card-head">
+          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-link"/></svg></span>
+          <h2 id="linksTitle" class="card-title">Quick Links</h2>
+          <button type="button" id="addLinkBtn" class="icon-btn" aria-label="Add quick link" title="Add link">
+            <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>
+          </button>
+        </div>
+        <ul id="linksGrid" class="links-grid" aria-describedby="linksHint"></ul>
+        <p id="linksHint" class="hint">Drag tiles to reorder, or use Alt + arrow keys.</p>
+        <div id="linksEmpty" class="empty-state" hidden>
+          <div class="empty-icon" aria-hidden="true">🦆</div>
+          <p class="empty-title">No quick links yet.</p>
+          <p class="empty-text">Add your first shortcut.</p>
+          <button type="button" class="btn primary" id="emptyAddLinkBtn">
+            <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span>Add link</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Centre: Sticky Notes -->
+      <section class="card notes-card fade-in" id="notesCard" aria-labelledby="notesTitle">
+        <div class="card-head">
+          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-note"/></svg></span>
+          <h2 id="notesTitle" class="card-title">Sticky Notes</h2>
+          <span id="saveStatus" class="save-pill" role="status" aria-live="polite"></span>
+        </div>
+
+        <div class="note-tabs" role="tablist" aria-label="Notes" id="noteTabs"></div>
+
+        <div class="note-wrap" role="tabpanel" id="notePanel">
+          <label for="noteEditor" class="sr-only" id="noteEditorLabel">Note</label>
+          <textarea id="noteEditor" class="note-editor" spellcheck="true"
+                    placeholder="No notes here yet.&#10;Start typing to create one."></textarea>
+        </div>
+
+        <div class="note-foot">
+          <p class="note-meta">
+            <span id="noteCounts">0 characters · 0 words</span>
+            <span class="dot-sep" aria-hidden="true">·</span>
+            <span id="noteEdited">Not edited yet</span>
+          </p>
+          <button type="button" id="resetNoteBtn" class="btn secondary btn-sm">
+            <svg class="i" aria-hidden="true"><use href="#i-reset"/></svg><span>Reset note</span>
+          </button>
+        </div>
+        <p class="hint">Ctrl + 1 to 5 switches notes (Alt + 1 to 5 works too).</p>
+      </section>
+
+      <!-- Right: Weather -->
+      <section class="card weather-card fade-in" id="weatherCard" aria-labelledby="weatherTitle" aria-busy="true">
+        <div class="card-head">
+          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-cloud"/></svg></span>
+          <h2 id="weatherTitle" class="card-title">Weather</h2>
+          <button type="button" id="weatherRefresh" class="icon-btn" aria-label="Refresh weather" title="Refresh">
+            <svg class="i" aria-hidden="true"><use href="#i-refresh"/></svg>
+          </button>
+        </div>
+
+        <div id="weatherBody" class="weather-body" aria-live="polite">
+          <div class="weather-skeleton" aria-hidden="true">
+            <span class="sk sk-icon"></span><span class="sk sk-line"></span><span class="sk sk-line short"></span>
+          </div>
+        </div>
+
+        <div class="segmented seg-4 weather-locations" role="radiogroup" aria-label="Weather location" id="weatherLocations">
+          <label class="seg"><input type="radio" name="wxLoc" value="glasgow"><span>Glasgow</span></label>
+          <label class="seg"><input type="radio" name="wxLoc" value="london"><span>London</span></label>
+          <label class="seg"><input type="radio" name="wxLoc" value="edinburgh"><span>Edinburgh</span></label>
+          <label class="seg"><input type="radio" name="wxLoc" value="custom"><span id="wxCustomLabel">Custom</span></label>
+        </div>
+        <p id="weatherFoot" class="hint weather-foot"></p>
+      </section>
+    </main>
+
+    <footer class="footer">DuckGenerator Dashboard Edition</footer>
+  </div>
+
+  <!-- Floating status message (DuckGenerator style) -->
+  <p id="toast" class="toast" role="status" aria-live="polite"></p>
+
+  <!-- Settings dialog -->
+  <dialog id="settingsDialog" class="dialog settings-dialog" aria-labelledby="settingsTitle">
+    <div class="dialog-inner">
+      <div class="dialog-head">
+        <h2 id="settingsTitle" class="dialog-title">Settings</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close settings">
+          <svg class="i" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+
+      <div class="segmented seg-4 settings-tabs" role="tablist" aria-label="Settings sections">
+        <button type="button" class="seg" role="tab" id="stab-personal" aria-controls="spanel-personal" data-tab="personal">Personalise</button>
+        <button type="button" class="seg" role="tab" id="stab-weather" aria-controls="spanel-weather" data-tab="weather">Weather</button>
+        <button type="button" class="seg" role="tab" id="stab-links" aria-controls="spanel-links" data-tab="links">Links</button>
+        <button type="button" class="seg" role="tab" id="stab-notes" aria-controls="spanel-notes" data-tab="notes">Notes</button>
+      </div>
+
+      <div class="settings-panels">
+        <!-- Personalisation -->
+        <section class="settings-panel" role="tabpanel" id="spanel-personal" aria-labelledby="stab-personal" tabindex="0">
+          <label class="field">
+            <span class="legend">Your name</span>
+            <input type="text" id="userNameInput" class="input" maxlength="40" placeholder="e.g. Michael" autocomplete="given-name">
+            <span class="field-help">Used in the greeting. Leave blank for no name.</span>
+          </label>
+          <fieldset class="field">
+            <legend class="legend">Theme</legend>
+            <div class="segmented seg-3" role="radiogroup" aria-label="Theme">
+              <label class="seg"><input type="radio" name="theme" value="light"><span>Light</span></label>
+              <label class="seg"><input type="radio" name="theme" value="dark"><span>Dark</span></label>
+              <label class="seg"><input type="radio" name="theme" value="system"><span>System</span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <!-- Weather -->
+        <section class="settings-panel" role="tabpanel" id="spanel-weather" aria-labelledby="stab-weather" tabindex="0" hidden>
+          <form id="weatherForm" class="stack" novalidate>
+            <fieldset class="field">
+              <legend class="legend">Location</legend>
+              <div class="segmented seg-4" role="radiogroup" aria-label="Location">
+                <label class="seg"><input type="radio" name="sLoc" value="glasgow"><span>Glasgow</span></label>
+                <label class="seg"><input type="radio" name="sLoc" value="london"><span>London</span></label>
+                <label class="seg"><input type="radio" name="sLoc" value="edinburgh"><span>Edinburgh</span></label>
+                <label class="seg"><input type="radio" name="sLoc" value="custom"><span>Custom</span></label>
+              </div>
+            </fieldset>
+            <label class="field" id="customLocField">
+              <span class="legend">Custom location</span>
+              <input type="text" id="customLocInput" class="input" placeholder="e.g. Aberdeen or Paris,FR" maxlength="80">
+            </label>
+            <label class="field">
+              <span class="legend">Weather provider</span>
+              <select id="providerSelect" class="input select"></select>
+            </label>
+            <div class="field" id="apiKeyField">
+              <label class="legend" for="apiKeyInput">OpenWeatherMap API key</label>
+              <div class="input-row">
+                <input type="password" id="apiKeyInput" class="input" autocomplete="off" spellcheck="false" placeholder="Paste your API key">
+                <button type="button" id="toggleKeyBtn" class="btn secondary btn-sm" aria-pressed="false">Show</button>
+              </div>
+              <span class="field-help">Without a key the widget shows friendly demo data.</span>
+            </div>
+            <details class="instructions">
+              <summary>How to get a free API key</summary>
+              <ol>
+                <li>Create a free account at <a href="https://home.openweathermap.org/users/sign_up" target="_blank" rel="noopener">openweathermap.org</a>.</li>
+                <li>Open <a href="https://home.openweathermap.org/api_keys" target="_blank" rel="noopener">API keys</a> in your account and copy the default key.</li>
+                <li>Paste it above and press <strong>Save weather settings</strong>.</li>
+                <li>New keys can take up to a couple of hours to start working. Demo data shows until then.</li>
+              </ol>
+              <p>Prefer no sign-up? Pick <strong>Open-Meteo</strong> as the provider. It is free and needs no key.</p>
+              <p>Your key is stored only in this browser, in extension storage.</p>
+            </details>
+            <div class="actions">
+              <button type="submit" class="btn primary">Save weather settings</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Quick links -->
+        <section class="settings-panel" role="tabpanel" id="spanel-links" aria-labelledby="stab-links" tabindex="0" hidden>
+          <ul id="settingsLinks" class="settings-links" aria-label="Quick links"></ul>
+          <p id="settingsLinksEmpty" class="empty-inline" hidden>No quick links yet. Add your first shortcut.</p>
+          <div class="actions">
+            <button type="button" id="settingsResetLinks" class="btn secondary">Restore defaults</button>
+            <button type="button" id="settingsAddLink" class="btn primary">
+              <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg><span>Add link</span>
+            </button>
+          </div>
+        </section>
+
+        <!-- Notes -->
+        <section class="settings-panel" role="tabpanel" id="spanel-notes" aria-labelledby="stab-notes" tabindex="0" hidden>
+          <p class="panel-text">Back up your five notes to a file, bring them back later, or start fresh.</p>
+          <div class="tile-actions">
+            <button type="button" id="exportNotesBtn" class="action-tile" style="--accent: var(--green)">
+              <span class="action-emoji" aria-hidden="true">📤</span>
+              <span class="action-title">Export notes</span>
+              <span class="action-text">Download a .json backup</span>
+            </button>
+            <button type="button" id="importNotesBtn" class="action-tile" style="--accent: var(--blue)">
+              <span class="action-emoji" aria-hidden="true">📥</span>
+              <span class="action-title">Import notes</span>
+              <span class="action-text">Replace notes from a backup</span>
+            </button>
+            <button type="button" id="clearNotesBtn" class="action-tile" style="--accent: var(--orange)">
+              <span class="action-emoji" aria-hidden="true">🧹</span>
+              <span class="action-title">Clear notes</span>
+              <span class="action-text">Empty all five notes</span>
+            </button>
+          </div>
+          <input type="file" id="importNotesInput" accept="application/json,.json" hidden>
+        </section>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Add / edit link dialog -->
+  <dialog id="linkDialog" class="dialog small-dialog" aria-labelledby="linkDialogTitle">
+    <form id="linkForm" class="dialog-inner" novalidate>
+      <div class="dialog-head">
+        <h2 id="linkDialogTitle" class="dialog-title">Add link</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">
+          <svg class="i" aria-hidden="true"><use href="#i-close"/></svg>
+        </button>
+      </div>
+      <label class="field">
+        <span class="legend">Title</span>
+        <input type="text" id="linkTitle" class="input" maxlength="40" placeholder="e.g. BBC Weather">
+      </label>
+      <label class="field">
+        <span class="legend">URL</span>
+        <input type="url" id="linkUrl" class="input" required placeholder="e.g. bbc.co.uk/weather" aria-describedby="linkError">
+      </label>
+      <label class="field">
+        <span class="legend">Icon (optional)</span>
+        <input type="text" id="linkIcon" class="input" maxlength="300" placeholder="An emoji like 🦆, or an image URL">
+        <span class="field-help">Leave blank to use the site's own icon.</span>
+      </label>
+      <p id="linkError" class="form-error" role="alert"></p>
+      <div class="actions">
+        <button type="button" class="btn secondary" data-close>Cancel</button>
+        <button type="submit" class="btn primary">Save link</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirm dialog -->
+  <dialog id="confirmDialog" class="dialog small-dialog" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+    <div class="dialog-inner">
+      <div class="confirm-emoji" aria-hidden="true">🦆</div>
+      <h2 id="confirmTitle" class="dialog-title center">Are you sure?</h2>
+      <p id="confirmText" class="panel-text center"></p>
+      <div class="actions center">
+        <button type="button" class="btn secondary" id="confirmCancel">Cancel</button>
+        <button type="button" class="btn primary" id="confirmOk">OK</button>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

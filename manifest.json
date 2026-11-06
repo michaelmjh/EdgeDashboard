@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Duck Dashboard",
+  "short_name": "Duck Dashboard",
+  "version": "1.0.0",
+  "description": "DuckGenerator Dashboard Edition. A friendly new tab page with Google and DuckDuckGo search, quick links, sticky notes and weather.",
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage", "favicon"],
+  "host_permissions": [
+    "https://api.openweathermap.org/*",
+    "https://api.open-meteo.com/*",
+    "https://geocoding-api.open-meteo.com/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; img-src 'self' data: https:; connect-src https://api.openweathermap.org https://api.open-meteo.com https://geocoding-api.open-meteo.com"
+  }
+}
