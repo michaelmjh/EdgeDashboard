@@ -1,0 +1,566 @@
+Build an Edge/Chrome New Tab Dashboard Extension
+
+Create a modern Microsoft Edge / Google Chrome browser extension using Manifest V3 that replaces the browser's New Tab page with a custom productivity dashboard.
+
+The dashboard should provide quick access to links, note-taking, search tools, and weather information while maintaining a consistent design language based on the existing DuckGenerator extension.
+
+Generate a complete, production-ready extension that can be loaded immediately in Edge or Chrome Developer Mode.
+
+Core Requirements
+New Tab Override
+
+When the user opens a new tab, display a custom dashboard instead of the browser's default New Tab page.
+
+Use:
+
+"chrome_url_overrides": {
+  "newtab": "newtab.html"
+}
+
+
+The dashboard must be responsive and work well on desktops, laptops, and smaller screens.
+
+Design System and Styling Requirements
+Styling Reference
+
+The entire dashboard must closely match the design language used in the existing DuckGenerator extension.
+
+The dashboard should feel like it belongs to the same product family and has been created by the same developer.
+
+Design Personality
+
+The dashboard should feel:
+
+Friendly
+Playful
+Productive
+Clean
+Modern
+
+Inspired by:
+
+DuckGenerator
+Microsoft Fluent Design
+Windows 11 Widgets
+
+Avoid:
+
+Corporate dashboard appearance
+Admin portal styling
+Harsh colours
+Excessive minimalism
+Colour Palette
+Primary Accents
+
+Use DuckGenerator-inspired colours:
+
+Duck Yellow  #FFD54F
+Soft Blue    #64B5F6
+Soft Green   #81C784
+Soft Purple  #BA68C8
+Soft Orange  #FFB74D
+
+Light Theme
+Background: #F5F7FA
+Panels:     #FFFFFF
+Borders:    #E3E7ED
+Text:       #2D3748
+
+Dark Theme
+Background: #1E1E1E
+Panels:     #2A2A2A
+Borders:    #3A3A3A
+Text:       #EAEAEA
+
+Typography
+
+Use:
+
+font-family:
+  "Segoe UI",
+  system-ui,
+  sans-serif;
+
+
+Typography should be:
+
+Friendly
+Clean
+Highly readable
+Consistent
+Cards and Panels
+
+All dashboard sections should use a unified card design.
+
+Requirements:
+
+border-radius: 14px;
+box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+
+Include:
+
+Rounded corners
+Soft shadows
+Subtle borders
+Consistent spacing
+Comfortable padding
+Buttons
+
+Buttons should follow the DuckGenerator style:
+
+Rounded corners
+Soft gradients
+Smooth hover animations
+Subtle elevation on hover
+Slight press effect on click
+
+Use transition durations around:
+
+200ms
+
+Animations
+
+Use smooth, subtle animations:
+
+Card hover effects
+Fade-ins
+Scale hover effects
+Tab transitions
+Settings panel animations
+
+Avoid flashy or distracting effects.
+
+Consistency Rules
+
+The following areas must all share the same visual language:
+
+Search
+Quick Links
+Notes
+Weather Widget
+Settings
+Forms
+Buttons
+Dialogs
+
+No section should look like it belongs to a different application.
+
+Dashboard Layout
+
+Create a three-column responsive layout.
+
+Header Section
+
+Display at the top of the page:
+
+Greeting
+
+Examples:
+
+Good Morning
+Good Afternoon
+Good Evening
+
+
+If a username is configured:
+
+Good Morning, Michael
+
+Date and Time
+
+Display:
+
+Friday, 6 November 2026
+12:30
+
+
+Update automatically every minute.
+
+Settings Button
+
+Place in the upper-right corner.
+
+Search Section
+
+Directly beneath the header, add a dedicated search area.
+
+This is the primary search experience for the dashboard.
+
+Display the two search panels side-by-side on desktop and stacked vertically on smaller screens.
+
+Google Search
+
+Include:
+
+Google Search
+
+
+Features:
+
+Search textbox
+Search button
+Press Enter to search
+Open results in new tab
+
+Search URL:
+
+https://www.google.com/search?q=
+
+
+Example:
+
+https://www.google.com/search?q=weather+glasgow
+
+DuckDuckGo Search
+
+Include:
+
+DuckDuckGo Search
+
+
+Features:
+
+Search textbox
+Search button
+Press Enter to search
+Open results in new tab
+
+Search URL:
+
+https://duckduckgo.com/?q=
+
+
+Example:
+
+https://duckduckgo.com/?q=weather+glasgow
+
+Search Styling
+
+The search bars should follow the DuckGenerator design language.
+
+Requirements:
+
+Rounded search fields
+Search icons
+Consistent button styling
+Subtle shadows
+Smooth hover effects
+
+Example layout:
+
+┌─────────────────────┐ ┌─────────────────────┐
+│ Google Search       │ │ DuckDuckGo Search   │
+│ [ Search Here ] 🔍 │ │ [ Search Here ] 🔍 │
+└─────────────────────┘ └─────────────────────┘
+
+Search History (Nice to Have)
+
+Store:
+
+10 recent searches
+
+
+for each engine separately.
+
+Persist using:
+
+chrome.storage.local
+
+
+Include:
+
+Recent searches
+Clear history option
+Left Column
+Quick Links
+
+Display user-configurable shortcut tiles.
+
+Each link should contain:
+
+Title
+URL
+Optional icon
+
+Features:
+
+Add Link
+Edit Link
+Delete Link
+Drag-and-drop ordering
+Open in new tab
+Automatic persistence
+
+Store in:
+
+chrome.storage.local
+
+Default Links
+
+Provide sample links:
+
+Outlook
+Teams
+OneDrive
+GitHub
+Stack Overflow
+BBC News
+Centre Column
+Sticky Notes
+
+This is the primary feature of the dashboard.
+
+Note Tabs
+
+Display 5 pastel note tabs across the top.
+
+Suggested colours:
+
+Yellow
+Blue
+Green
+Purple
+Orange
+
+Requirements:
+
+Pill style tabs
+Smooth switching
+Active note highlighted
+DuckGenerator styling
+Note Features
+
+Each note should support:
+
+Rich multi-line editing
+Auto-save
+Character count
+Word count
+Last edited timestamp
+Reset note button
+
+Storage:
+
+chrome.storage.local
+
+Persistence Features
+
+Remember:
+
+Last opened note
+Last selected tab
+Notes between sessions
+
+Show save confirmation:
+
+Saved ✓
+
+
+when data is persisted.
+
+Nice-to-Have Note Features
+
+Where practical:
+
+Auto-focus last note
+Restore cursor position
+Right Column
+Weather Widget
+
+Create a modern weather widget.
+
+Weather Information
+
+Display:
+
+Current temperature
+Condition
+Feels-like temperature
+Humidity
+Wind speed
+Daily high
+Daily low
+
+Include weather icons.
+
+Weather Locations
+
+Allow:
+
+Glasgow
+London
+Edinburgh
+Custom Location
+
+
+Store selected location.
+
+Weather API
+
+Build a provider abstraction layer.
+
+Requirements:
+
+API key configurable in settings
+Clear setup instructions
+Fallback mock weather data if no API key exists
+Weather Styling
+
+Use DuckGenerator card styling.
+
+Bonus:
+
+Change accent colours depending on weather:
+
+Sunny
+Cloudy
+Rain
+Snow
+
+Settings Panel
+
+The settings button should open a modern modal dialog.
+
+Personalisation
+
+Allow:
+
+User name
+Theme selection
+
+Options:
+
+Light
+Dark
+System
+
+Weather Settings
+
+Allow:
+
+Location
+API key
+Quick Links Management
+
+Allow:
+
+Add
+Edit
+Delete
+Reorder
+Notes Management
+
+Include:
+
+Export notes
+Import notes
+Clear notes
+Storage Requirements
+
+Store all data locally:
+
+chrome.storage.local
+
+
+Persist:
+
+Notes
+Note selection
+Theme
+User name
+Quick links
+Weather preferences
+Search history
+
+No backend required.
+
+Accessibility
+
+Support:
+
+Full keyboard navigation
+Screen readers
+Focus indicators
+ARIA labels
+Keyboard Shortcuts
+
+Support:
+
+Ctrl+1
+Ctrl+2
+Ctrl+3
+Ctrl+4
+Ctrl+5
+
+
+to switch note tabs.
+
+Empty States
+
+Show friendly DuckGenerator-style messaging.
+
+Examples:
+
+No quick links yet.
+Add your first shortcut.
+
+No notes here yet.
+Start typing to create one.
+
+Weather unavailable.
+Check your location settings.
+
+
+Avoid technical error messages.
+
+Performance Requirements
+Fast startup
+Minimal memory usage
+No unnecessary polling
+No external frameworks
+No React
+No Angular
+No Vue
+No CDN dependencies
+
+Only use:
+
+HTML
+CSS
+Vanilla JavaScript
+Files To Generate
+
+Generate complete code for:
+
+manifest.json
+
+newtab.html
+newtab.css
+newtab.js
+
+weather.js
+storage.js
+settings.js
+
+/icons
+    icon16.png
+    icon48.png
+    icon128.png
+
+Final Goal
+
+The finished result should feel like:
+
+"DuckGenerator Dashboard Edition"
+
+A polished personal dashboard that opens on every new browser tab and combines:
+
+Google Search
+DuckDuckGo Search
+Quick Links
+Sticky Notes
+Weather Widget
+Personalisation
+
+while maintaining a consistent DuckGenerator-inspired design throughout the entire experience.
