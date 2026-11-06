@@ -54,50 +54,49 @@
       </button>
     </header>
 
-    <!-- Search -->
-    <section class="search-grid" aria-label="Search">
-      <form class="card search-card fade-in" data-engine="google" role="search" aria-labelledby="googleTitle" style="--accent: var(--blue)">
-        <div class="card-head">
-          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-globe"/></svg></span>
-          <h2 id="googleTitle" class="card-title">Google Search</h2>
-          <button type="button" class="text-btn history-clear" hidden>Clear history</button>
-        </div>
-        <div class="search-field">
-          <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
-          <input type="search" class="input search-input" placeholder="Search Google" aria-label="Search Google"
-                 autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
-                 aria-expanded="false" aria-controls="googleHistory">
-          <button type="submit" class="btn primary search-btn">
-            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
-            <span>Search</span>
-          </button>
-          <ul id="googleHistory" class="history-pop" role="listbox" aria-label="Recent Google searches" hidden></ul>
-        </div>
-      </form>
-
-      <form class="card search-card fade-in" data-engine="duckduckgo" role="search" aria-labelledby="ddgTitle" style="--accent: var(--orange)">
-        <div class="card-head">
-          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-shield"/></svg></span>
-          <h2 id="ddgTitle" class="card-title">DuckDuckGo Search</h2>
-          <button type="button" class="text-btn history-clear" hidden>Clear history</button>
-        </div>
-        <div class="search-field">
-          <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
-          <input type="search" class="input search-input" placeholder="Search DuckDuckGo" aria-label="Search DuckDuckGo"
-                 autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
-                 aria-expanded="false" aria-controls="ddgHistory">
-          <button type="submit" class="btn primary search-btn">
-            <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
-            <span>Search</span>
-          </button>
-          <ul id="ddgHistory" class="history-pop" role="listbox" aria-label="Recent DuckDuckGo searches" hidden></ul>
-        </div>
-      </form>
-    </section>
-
     <main class="dash-grid">
-      <!-- Left: Quick Links -->
-      <section class="card links-card fade-in" aria-labelledby="linksTitle" style="--accent: var(--blue)">
+      <!-- Left: Search and Quick Links -->
+      <div class="left-col">
+        <section class="card search-card fade-in" aria-labelledby="searchTitle" style="--accent: var(--blue)">
+          <div class="card-head">
+            <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-search"/></svg></span>
+            <h2 id="searchTitle" class="card-title">Search</h2>
+          </div>
+          <form class="search-row" data-engine="duckduckgo" role="search" aria-label="DuckDuckGo search" style="--accent: var(--orange)">
+            <div class="search-row-head">
+              <label class="legend" for="ddgInput">DuckDuckGo</label>
+              <button type="button" class="text-btn history-clear" hidden>Clear history</button>
+            </div>
+            <div class="search-field">
+              <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+              <input type="search" id="ddgInput" class="input search-input" placeholder="Search DuckDuckGo"
+                     autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
+                     aria-expanded="false" aria-controls="ddgHistory">
+              <button type="submit" class="btn primary search-btn" aria-label="Search DuckDuckGo" title="Search DuckDuckGo">
+                <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+              </button>
+              <ul id="ddgHistory" class="history-pop" role="listbox" aria-label="Recent DuckDuckGo searches" hidden></ul>
+            </div>
+          </form>
+          <form class="search-row" data-engine="google" role="search" aria-label="Google search" style="--accent: var(--blue)">
+            <div class="search-row-head">
+              <label class="legend" for="googleInput">Google</label>
+              <button type="button" class="text-btn history-clear" hidden>Clear history</button>
+            </div>
+            <div class="search-field">
+              <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+              <input type="search" id="googleInput" class="input search-input" placeholder="Search Google"
+                     autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
+                     aria-expanded="false" aria-controls="googleHistory">
+              <button type="submit" class="btn primary search-btn" aria-label="Search Google" title="Search Google">
+                <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
+              </button>
+              <ul id="googleHistory" class="history-pop" role="listbox" aria-label="Recent Google searches" hidden></ul>
+            </div>
+          </form>
+        </section>
+
+        <section class="card links-card fade-in" aria-labelledby="linksTitle" style="--accent: var(--blue)">
         <div class="card-head">
           <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-link"/></svg></span>
           <h2 id="linksTitle" class="card-title">Quick Links</h2>
@@ -116,6 +115,7 @@
           </button>
         </div>
       </section>
+      </div>
 
       <!-- Centre: Sticky Notes -->
       <section class="card notes-card fade-in" id="notesCard" aria-labelledby="notesTitle">

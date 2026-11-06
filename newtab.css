@@ -195,12 +195,6 @@ a { color: var(--focus); }
   box-shadow: var(--shadow);
 }
 
-.search-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--gap);
-}
-
 .dash-grid {
   display: grid;
   grid-template-columns: minmax(240px, 1fr) minmax(0, 1.75fr) minmax(260px, 1fr);
@@ -209,7 +203,13 @@ a { color: var(--focus); }
   align-items: start;
 }
 
-.links-card { grid-area: links; }
+.left-col {
+  grid-area: links;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  min-width: 0;
+}
 .notes-card { grid-area: notes; }
 .weather-card { grid-area: weather; }
 
@@ -552,12 +552,38 @@ fieldset.field > .legend { margin-bottom: 6px; }
 
 .search-input::-webkit-search-cancel-button { cursor: pointer; }
 
-.search-card .search-input:focus {
+.search-row .search-input:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 24%, transparent);
 }
 
-.search-btn { height: 48px; flex: none; }
+.search-btn {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  flex: none;
+}
+
+.search-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+
+.search-row + .search-row { margin-top: 4px; }
+
+.search-row:focus-within { z-index: 2; }
+
+.search-row-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 24px;
+}
+
+.search-row-head .text-btn { padding: 2px 8px; }
 
 .search-card:focus-within { z-index: 5; }
 
@@ -1234,10 +1260,9 @@ fieldset.field > .legend { margin-bottom: 6px; }
 .fade-in {
   animation: fade-up 420ms var(--ease) both;
 }
-.search-grid .fade-in:nth-child(2) { animation-delay: 40ms; }
-.dash-grid .fade-in:nth-child(1) { animation-delay: 80ms; }
-.dash-grid .fade-in:nth-child(2) { animation-delay: 120ms; }
-.dash-grid .fade-in:nth-child(3) { animation-delay: 160ms; }
+.left-col .links-card { animation-delay: 60ms; }
+.dash-grid > .fade-in:nth-child(2) { animation-delay: 100ms; }
+.dash-grid > .fade-in:nth-child(3) { animation-delay: 140ms; }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(8px); }
@@ -1263,23 +1288,21 @@ fieldset.field > .legend { margin-bottom: 6px; }
 
 @media (max-width: 1100px) {
   .dash-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(260px, 1fr) minmax(0, 1.5fr);
     grid-template-areas:
-      "notes notes"
-      "links weather";
+      "links notes"
+      "weather notes";
   }
 }
 
 @media (max-width: 720px) {
   .page { padding: 18px 16px 16px; gap: 16px; }
-  .search-grid { grid-template-columns: 1fr; gap: 16px; }
   .dash-grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "notes" "links" "weather";
+    grid-template-areas: "links" "notes" "weather";
     gap: 16px;
   }
-  .search-btn span { display: none; }
-  .search-btn { width: 48px; padding: 0; }
+  .left-col { gap: 16px; }
   .note-tab .tab-label { display: none; }
   .note-editor { height: 46vh; min-height: 280px; }
   .tile-actions { grid-template-columns: 1fr; }

@@ -312,7 +312,7 @@
     searchHistory = await Store.get('searchHistory');
     searchHistory.google = searchHistory.google || [];
     searchHistory.duckduckgo = searchHistory.duckduckgo || [];
-    const forms = $$('.search-card').map(setupSearchForm);
+    const forms = $$('.search-row').map(setupSearchForm);
     forms.forEach((f) => f.updateClearButton());
 
     Store.onChange('searchHistory', (value) => {
