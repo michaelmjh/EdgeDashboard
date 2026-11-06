@@ -63,15 +63,11 @@
             <h2 id="searchTitle" class="card-title">Search</h2>
           </div>
           <form class="search-row" data-engine="duckduckgo" role="search" aria-label="DuckDuckGo search" style="--accent: var(--orange)">
-            <div class="search-row-head">
-              <label class="legend" for="ddgInput">DuckDuckGo</label>
-              <button type="button" class="text-btn history-clear" hidden>Clear history</button>
-            </div>
             <div class="search-field">
               <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
               <input type="search" id="ddgInput" class="input search-input" placeholder="Search DuckDuckGo"
                      autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
-                     aria-expanded="false" aria-controls="ddgHistory">
+                     aria-expanded="false" aria-controls="ddgHistory" aria-label="Search DuckDuckGo">
               <button type="submit" class="btn primary search-btn" aria-label="Search DuckDuckGo" title="Search DuckDuckGo">
                 <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
               </button>
@@ -79,15 +75,11 @@
             </div>
           </form>
           <form class="search-row" data-engine="google" role="search" aria-label="Google search" style="--accent: var(--blue)">
-            <div class="search-row-head">
-              <label class="legend" for="googleInput">Google</label>
-              <button type="button" class="text-btn history-clear" hidden>Clear history</button>
-            </div>
             <div class="search-field">
               <svg class="i search-icon" aria-hidden="true"><use href="#i-search"/></svg>
               <input type="search" id="googleInput" class="input search-input" placeholder="Search Google"
                      autocomplete="off" spellcheck="false" role="combobox" aria-autocomplete="list"
-                     aria-expanded="false" aria-controls="googleHistory">
+                     aria-expanded="false" aria-controls="googleHistory" aria-label="Search Google">
               <button type="submit" class="btn primary search-btn" aria-label="Search Google" title="Search Google">
                 <svg class="i" aria-hidden="true"><use href="#i-search"/></svg>
               </button>
@@ -104,8 +96,7 @@
             <svg class="i" aria-hidden="true"><use href="#i-plus"/></svg>
           </button>
         </div>
-        <ul id="linksGrid" class="links-grid" aria-describedby="linksHint"></ul>
-        <p id="linksHint" class="hint">Drag tiles to reorder, or use Alt + arrow keys.</p>
+        <ul id="linksGrid" class="links-grid"></ul>
         <div id="linksEmpty" class="empty-state" hidden>
           <div class="empty-icon" aria-hidden="true">🦆</div>
           <p class="empty-title">No quick links yet.</p>

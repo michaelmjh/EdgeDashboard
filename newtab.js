@@ -207,14 +207,8 @@
     const engine = form.dataset.engine;
     const input = $('.search-input', form);
     const pop = $('.history-pop', form);
-    const clearBtn = $('.history-clear', form);
     let activeIndex = -1;
     let matches = [];
-
-    function updateClearButton() {
-      clearBtn.hidden = searchHistory[engine].length === 0;
-      clearBtn.setAttribute('aria-label', `Clear ${ENGINES[engine].name} search history`);
-    }
 
     function closePop() {
       pop.hidden = true;
@@ -233,7 +227,10 @@
       pop.innerHTML = '<li class="history-label" role="presentation">Recent searches</li>' +
         matches.map((q, i) =>
           `<li class="history-option" role="option" id="${pop.id}-opt-${i}" data-index="${i}" aria-selected="false">` +
-          `${svgIcon('i-history')}<span>${escapeHtml(q)}</span></li>`).join('');
+          `${svgIcon('i-history')}<span>${escapeHtml(q)}</span></li>`).join('') +
+        // Last option clears this engine's history.
+        `<li class="history-option history-clear-opt" role="option" id="${pop.id}-opt-clear" data-index="clear" aria-selected="false">` +
+        `${svgIcon('i-trash')}<span>Clear recent searches</span></li>`;
       pop.hidden = false;
       input.setAttribute('aria-expanded', 'true');
       activeIndex = -1;
@@ -259,7 +256,18 @@
       input.value = '';
       closePop();
       await addHistory(engine, query);
-      updateClearButton();
+    }
+
+    async function clearHistory() {
+      searchHistory[engine] = [];
+      await Store.set('searchHistory', searchHistory);
+      closePop();
+      Dash.toast(`${ENGINES[engine].name} history cleared`);
+    }
+
+    function pick(index) {
+      if (index === 'clear' || index === matches.length) clearHistory();
+      else runSearch(matches[Number(index)]);
     }
 
     form.addEventListener('submit', (e) => {
@@ -282,7 +290,7 @@
         setActive(activeIndex - 1);
       } else if (e.key === 'Enter' && !pop.hidden && activeIndex >= 0) {
         e.preventDefault();
-        runSearch(matches[activeIndex]);
+        pick(activeIndex);
       } else if (e.key === 'Escape' && !pop.hidden) {
         e.preventDefault();
         closePop();
@@ -293,31 +301,19 @@
     pop.addEventListener('mousedown', (e) => e.preventDefault());
     pop.addEventListener('click', (e) => {
       const option = e.target.closest('.history-option');
-      if (option) runSearch(matches[Number(option.dataset.index)]);
+      if (option) pick(option.dataset.index);
     });
 
-    clearBtn.addEventListener('click', async () => {
-      searchHistory[engine] = [];
-      await Store.set('searchHistory', searchHistory);
-      updateClearButton();
-      closePop();
-      Dash.toast(`${ENGINES[engine].name} history cleared`);
-      input.focus();
-    });
-
-    return { updateClearButton };
   }
 
   async function initSearch() {
     searchHistory = await Store.get('searchHistory');
     searchHistory.google = searchHistory.google || [];
     searchHistory.duckduckgo = searchHistory.duckduckgo || [];
-    const forms = $$('.search-row').map(setupSearchForm);
-    forms.forEach((f) => f.updateClearButton());
+    $$('.search-row').forEach(setupSearchForm);
 
     Store.onChange('searchHistory', (value) => {
       searchHistory = Object.assign({ google: [], duckduckgo: [] }, value);
-      forms.forEach((f) => f.updateClearButton());
     });
   }
 
@@ -392,7 +388,6 @@
   function renderLinks() {
     linksGrid.replaceChildren();
     $('#linksEmpty').hidden = links.length > 0;
-    $('#linksHint').hidden = links.length < 2;
 
     links.forEach((link) => {
       const li = document.createElement('li');

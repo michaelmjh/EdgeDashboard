@@ -571,19 +571,10 @@ fieldset.field > .legend { margin-bottom: 6px; }
   position: relative;
 }
 
-.search-row + .search-row { margin-top: 4px; }
+.search-row + .search-row { margin-top: 2px; }
 
 .search-row:focus-within { z-index: 2; }
 
-.search-row-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  min-height: 24px;
-}
-
-.search-row-head .text-btn { padding: 2px 8px; }
 
 .search-card:focus-within { z-index: 5; }
 
@@ -626,6 +617,14 @@ fieldset.field > .legend { margin-bottom: 6px; }
 }
 .history-option .i { width: 16px; height: 16px; color: var(--muted); }
 .history-option span { overflow: hidden; text-overflow: ellipsis; }
+
+.history-clear-opt {
+  margin-top: 4px;
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+}
 
 .history-option:hover,
 .history-option[aria-selected="true"] {
