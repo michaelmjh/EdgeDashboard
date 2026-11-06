@@ -56,7 +56,7 @@
     </header>
 
     <main class="dash-grid">
-      <!-- Left: Search and Quick Links -->
+      <!-- Left: Search, Quick Links and Weather -->
       <div class="left-col">
         <section class="card search-card fade-in" aria-labelledby="searchTitle" style="--accent: var(--blue)">
           <div class="card-head">
@@ -107,6 +107,28 @@
           </button>
         </div>
       </section>
+
+        <section class="card weather-card fade-in" id="weatherCard" aria-labelledby="weatherTitle" aria-busy="true">
+          <div class="card-head">
+            <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-cloud"/></svg></span>
+            <h2 id="weatherTitle" class="card-title">Weather</h2>
+            <button type="button" id="weatherRefresh" class="icon-btn" aria-label="Refresh weather" title="Refresh">
+              <svg class="i" aria-hidden="true"><use href="#i-refresh"/></svg>
+            </button>
+          </div>
+
+          <div id="weatherBody" class="weather-body" aria-live="polite">
+            <div class="weather-skeleton" aria-hidden="true">
+              <span class="sk sk-icon"></span><span class="sk sk-line"></span><span class="sk sk-line short"></span>
+            </div>
+          </div>
+
+          <div class="segmented seg-2 weather-locations" role="radiogroup" aria-label="Weather location" id="weatherLocations">
+            <label class="seg"><input type="radio" name="wxLoc" value="glasgow"><span>Glasgow</span></label>
+            <label class="seg"><input type="radio" name="wxLoc" value="custom"><span id="wxCustomLabel">Custom</span></label>
+          </div>
+          <p id="weatherFoot" class="hint weather-foot"></p>
+        </section>
       </div>
 
       <!-- Centre: Sticky Notes -->
@@ -141,30 +163,6 @@
         <p class="hint">Ctrl + 1 to 5 switches notes (Alt + 1 to 5 works too).</p>
       </section>
 
-      <!-- Right: Weather -->
-      <section class="card weather-card fade-in" id="weatherCard" aria-labelledby="weatherTitle" aria-busy="true">
-        <div class="card-head">
-          <span class="chip" aria-hidden="true"><svg class="i"><use href="#i-cloud"/></svg></span>
-          <h2 id="weatherTitle" class="card-title">Weather</h2>
-          <button type="button" id="weatherRefresh" class="icon-btn" aria-label="Refresh weather" title="Refresh">
-            <svg class="i" aria-hidden="true"><use href="#i-refresh"/></svg>
-          </button>
-        </div>
-
-        <div id="weatherBody" class="weather-body" aria-live="polite">
-          <div class="weather-skeleton" aria-hidden="true">
-            <span class="sk sk-icon"></span><span class="sk sk-line"></span><span class="sk sk-line short"></span>
-          </div>
-        </div>
-
-        <div class="segmented seg-4 weather-locations" role="radiogroup" aria-label="Weather location" id="weatherLocations">
-          <label class="seg"><input type="radio" name="wxLoc" value="glasgow"><span>Glasgow</span></label>
-          <label class="seg"><input type="radio" name="wxLoc" value="london"><span>London</span></label>
-          <label class="seg"><input type="radio" name="wxLoc" value="edinburgh"><span>Edinburgh</span></label>
-          <label class="seg"><input type="radio" name="wxLoc" value="custom"><span id="wxCustomLabel">Custom</span></label>
-        </div>
-        <p id="weatherFoot" class="hint weather-foot"></p>
-      </section>
     </main>
 
     <footer class="footer">DuckGenerator Dashboard Edition</footer>
@@ -213,10 +211,8 @@
           <form id="weatherForm" class="stack" novalidate>
             <fieldset class="field">
               <legend class="legend">Location</legend>
-              <div class="segmented seg-4" role="radiogroup" aria-label="Location">
+              <div class="segmented seg-2" role="radiogroup" aria-label="Location">
                 <label class="seg"><input type="radio" name="sLoc" value="glasgow"><span>Glasgow</span></label>
-                <label class="seg"><input type="radio" name="sLoc" value="london"><span>London</span></label>
-                <label class="seg"><input type="radio" name="sLoc" value="edinburgh"><span>Edinburgh</span></label>
                 <label class="seg"><input type="radio" name="sLoc" value="custom"><span>Custom</span></label>
               </div>
             </fieldset>

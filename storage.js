@@ -63,6 +63,7 @@
       { id: 'bbcnews', title: 'BBC News', url: 'https://www.bbc.co.uk/news', icon: '' }
     ],
     notes: {
+      order: 2,
       active: 0,
       items: Array.from({ length: NOTE_COUNT }, emptyNote)
     },
@@ -122,7 +123,27 @@
     return stored;
   }
 
+
+  /* Notes saved before v1.2 used the order yellow, blue, green, purple,
+     orange. Reorder them to yellow, purple, orange, green, blue. */
+  const NOTE_ORDER = 2;
+  const OLD_ORDER = ['yellow', 'blue', 'green', 'purple', 'orange'];
+  const NEW_ORDER = ['yellow', 'purple', 'orange', 'green', 'blue'];
+
+  function migrateNoteOrder(value) {
+    if (value.order === NOTE_ORDER) return value;
+    if (Array.isArray(value.items)) {
+      const old = value.items;
+      value.items = NEW_ORDER.map((c) => old[OLD_ORDER.indexOf(c)]);
+      const active = Number(value.active);
+      if (Number.isInteger(active) && OLD_ORDER[active]) value.active = NEW_ORDER.indexOf(OLD_ORDER[active]);
+    }
+    value.order = NOTE_ORDER;
+    return value;
+  }
+
   function normaliseNotes(value) {
+    migrateNoteOrder(value);
     const items = Array.isArray(value.items) ? value.items : [];
     value.items = Array.from({ length: NOTE_COUNT }, (_, i) => Object.assign(emptyNote(), items[i] || {}));
     const active = Number(value.active);
@@ -137,6 +158,8 @@
     } catch (e) {
       value = undefined;
     }
+    // Migrate before defaults fill in the current "order" marker.
+    if (key === 'notes' && value && typeof value === 'object') migrateNoteOrder(value);
     value = withDefaults(key, value);
     if (key === 'notes') value = normaliseNotes(value);
     if (key === 'quickLinks' && !Array.isArray(value)) value = clone(DEFAULTS.quickLinks);

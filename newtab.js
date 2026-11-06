@@ -619,10 +619,10 @@
 
   const NOTE_META = [
     { label: 'Yellow', colour: 'var(--yellow)' },
-    { label: 'Blue', colour: 'var(--blue)' },
-    { label: 'Green', colour: 'var(--green)' },
     { label: 'Purple', colour: 'var(--purple)' },
-    { label: 'Orange', colour: 'var(--orange)' }
+    { label: 'Orange', colour: 'var(--orange)' },
+    { label: 'Green', colour: 'var(--green)' },
+    { label: 'Blue', colour: 'var(--blue)' }
   ];
 
   const notesCard = $('#notesCard');
@@ -966,19 +966,24 @@
     async importData(data) {
       const list = Array.isArray(data) ? data : data && Array.isArray(data.notes) ? data.notes : null;
       if (!list) throw new Error('bad-format');
+      // Match by colour when the backup names it (older backups used another order).
+      const byLabel = {};
+      list.forEach((src) => {
+        if (src && typeof src.colour === 'string') byLabel[src.colour.toLowerCase()] = src;
+      });
       const items = Array.from({ length: Store.NOTE_COUNT }, (_, i) => {
-        const src = list[i];
+        const src = byLabel[NOTE_META[i].label.toLowerCase()] || (Object.keys(byLabel).length ? null : list[i]);
         const text = typeof src === 'string' ? src : src && typeof src.text === 'string' ? src.text : '';
         const updated = src && typeof src.updated === 'number' ? src.updated : (text ? Date.now() : null);
         return Object.assign(Store.emptyNote(), { text, updated });
       });
-      notes = { active: 0, items };
+      notes = { order: 2, active: 0, items };
       loadNoteIntoEditor();
       await Store.set('notes', notes);
       pushToNotepad();
     },
     async clearAll() {
-      notes = { active: notes.active, items: Array.from({ length: Store.NOTE_COUNT }, Store.emptyNote) };
+      notes = { order: 2, active: notes.active, items: Array.from({ length: Store.NOTE_COUNT }, Store.emptyNote) };
       loadNoteIntoEditor();
       await Store.set('notes', notes);
       pushToNotepad();

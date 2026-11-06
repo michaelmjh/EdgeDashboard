@@ -17,8 +17,8 @@
 (function (root) {
   'use strict';
 
-  // Dashboard note order. Index matches the note tabs.
-  const COLOURS = ['yellow', 'blue', 'green', 'purple', 'orange'];
+  // Dashboard note order (same as Sticky Notes). Index matches the note tabs.
+  const COLOURS = ['yellow', 'purple', 'orange', 'green', 'blue'];
   const APP = 'duck-dashboard';
   const PEER = 'sticky-notes';
 

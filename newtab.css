@@ -197,8 +197,8 @@ a { color: var(--focus); }
 
 .dash-grid {
   display: grid;
-  grid-template-columns: minmax(240px, 1fr) minmax(0, 1.75fr) minmax(260px, 1fr);
-  grid-template-areas: "links notes weather";
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-areas: "links notes .";
   gap: var(--gap);
   align-items: start;
 }
@@ -211,7 +211,6 @@ a { color: var(--focus); }
   min-width: 0;
 }
 .notes-card { grid-area: notes; }
-.weather-card { grid-area: weather; }
 
 .footer {
   padding: 4px 0 8px;
@@ -479,6 +478,7 @@ fieldset.field > .legend { margin-bottom: 6px; }
   border-radius: var(--pill);
 }
 
+.seg-2 { grid-template-columns: repeat(2, 1fr); }
 .seg-3 { grid-template-columns: repeat(3, 1fr); }
 .seg-4 { grid-template-columns: repeat(4, 1fr); }
 
@@ -788,11 +788,12 @@ fieldset.field > .legend { margin-bottom: 6px; }
 .notes-card {
   --note: var(--yellow);
   --accent: var(--note);
+  container-type: inline-size;
 }
-.notes-card[data-note="1"] { --note: var(--blue); }
-.notes-card[data-note="2"] { --note: var(--green); }
-.notes-card[data-note="3"] { --note: var(--purple); }
-.notes-card[data-note="4"] { --note: var(--orange); }
+.notes-card[data-note="1"] { --note: var(--purple); }
+.notes-card[data-note="2"] { --note: var(--orange); }
+.notes-card[data-note="3"] { --note: var(--green); }
+.notes-card[data-note="4"] { --note: var(--blue); }
 
 .note-tabs {
   display: grid;
@@ -855,6 +856,14 @@ fieldset.field > .legend { margin-bottom: 6px; }
 .note-tab.has-text:not([aria-selected="true"]) .tab-label::after {
   content: " •";
   color: var(--c);
+}
+
+/* Narrow notes card: drop the dots and tint the labels instead. */
+@container (max-width: 520px) {
+  .note-tab { gap: 0; padding: 0 4px; font-size: 12.5px; }
+  .note-tab .dot { display: none; }
+  .note-tab:not([aria-selected="true"]) { color: color-mix(in srgb, var(--c) 55%, var(--text)); }
+  .note-tab.has-text:not([aria-selected="true"]) .tab-label::after { content: "•"; }
 }
 
 .note-wrap { position: relative; }
@@ -976,7 +985,9 @@ fieldset.field > .legend { margin-bottom: 6px; }
 .weather-card[data-wx="storm"] { --wx: var(--purple); }
 .weather-card[data-wx="fog"] { --wx: #B0BEC5; }
 
-.weather-body { min-height: 210px; }
+.weather-body { min-height: 170px; }
+
+.weather-card { container-type: inline-size; }
 
 .weather-main {
   display: flex;
@@ -1022,7 +1033,7 @@ fieldset.field > .legend { margin-bottom: 6px; }
 
 .wx-stats {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 8px;
   margin: 14px 0 0;
 }
@@ -1031,8 +1042,10 @@ fieldset.field > .legend { margin-bottom: 6px; }
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: 10px 12px;
+  min-width: 0;
+  padding: 9px 8px;
   border-radius: 12px;
+  text-align: center;
   background: color-mix(in srgb, var(--panel) 80%, transparent);
   border: 1px solid var(--border);
   transition: transform var(--t) var(--ease), box-shadow var(--t) ease;
@@ -1041,19 +1054,26 @@ fieldset.field > .legend { margin-bottom: 6px; }
 
 .wx-stat dt {
   color: var(--muted);
-  font-size: 11px;
+  font-size: 10px;
+  white-space: nowrap;
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .wx-stat dd {
   margin: 0;
-  font-size: 16px;
+  font-size: 15px;
+  white-space: nowrap;
   font-weight: 650;
   font-variant-numeric: tabular-nums;
 }
 
 .weather-locations .seg { font-size: 12px; padding: 0 6px; }
+
+/* Four stats in one row; two by two when the card is too narrow. */
+@container (max-width: 330px) {
+  .wx-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 .weather-foot { min-height: 1em; }
 
@@ -1291,8 +1311,8 @@ fieldset.field > .legend { margin-bottom: 6px; }
   animation: fade-up 420ms var(--ease) both;
 }
 .left-col .links-card { animation-delay: 60ms; }
+.left-col .weather-card { animation-delay: 120ms; }
 .dash-grid > .fade-in:nth-child(2) { animation-delay: 100ms; }
-.dash-grid > .fade-in:nth-child(3) { animation-delay: 140ms; }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(8px); }
@@ -1318,10 +1338,8 @@ fieldset.field > .legend { margin-bottom: 6px; }
 
 @media (max-width: 1100px) {
   .dash-grid {
-    grid-template-columns: minmax(260px, 1fr) minmax(0, 1.5fr);
-    grid-template-areas:
-      "links notes"
-      "weather notes";
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas: "links notes";
   }
 }
 
@@ -1329,19 +1347,15 @@ fieldset.field > .legend { margin-bottom: 6px; }
   .page { padding: 18px 16px 16px; gap: 16px; }
   .dash-grid {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "links" "notes" "weather";
+    grid-template-areas: "links" "notes";
     gap: 16px;
   }
   .left-col { gap: 16px; }
-  .note-tab .tab-label { display: none; }
   .note-editor { height: 46vh; min-height: 280px; }
   .tile-actions { grid-template-columns: 1fr; }
   .settings-tabs .seg { font-size: 12px; padding: 0 4px; }
 }
 
-@media (max-width: 420px) {
-  .weather-locations { grid-template-columns: repeat(2, 1fr); border-radius: 22px; }
-}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
